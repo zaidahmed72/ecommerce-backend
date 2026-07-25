@@ -1,11 +1,10 @@
-const express = require("express");
+import express from "express";
+import indexRoutes from "./routes/indexRoutes.js";
 
 const app = express();
-
-const indexRoutes = require("./routes/indexRoutes");
 
 app.use(express.json());
 
 app.use("/", indexRoutes);
 
-module.exports = app;
+export default app;

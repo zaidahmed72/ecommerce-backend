@@ -1,9 +1,9 @@
-const express = require("express");
+import express from "express";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    res.send("E-commerce API Running");
+    res.send("E-commerce API running");
 });
 
-module.exports = router;
+export default router;
