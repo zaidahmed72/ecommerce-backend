@@ -183,3 +183,4 @@ export const getProfile = async (req, res) => {
 
     }
 };
+console.log("LOGIN SECRET:", process.env.JWT_SECRET);
