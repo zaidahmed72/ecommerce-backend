@@ -13,7 +13,7 @@ pipeline {
   }
   stages {
     stage('Checkout') {
-      steps { checkout scm; script { env.GIT_COMMIT = sh(script: 'git rev-parse --short=12 HEAD', returnStdout: true).trim(); env.IMAGE = "${params.IMAGE_REPOSITORY}:${env.GIT_COMMIT}" } }
+      steps { checkout scm; script { env.GIT_COMMIT = sh(script: 'git rev-parse --short=12 HEAD', returnStdout: true).trim(); def repository = params.IMAGE_REPOSITORY?.trim() ? params.IMAGE_REPOSITORY.trim() : 'zaid-ecommerce-api'; env.IMAGE = "${repository}:${env.GIT_COMMIT}" } }
     }
     stage('Validate') {
       steps { sh 'npm ci --ignore-scripts'; sh 'npm run check' }
