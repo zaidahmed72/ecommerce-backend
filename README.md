@@ -1,3 +1,9 @@
+## Resume portfolio project
+
+A separate, runnable API implementation matching the resume project is available in [portfolio/ecommerce-api](./portfolio/ecommerce-api/README.md). It includes its own Docker Compose stack and Jenkins pipeline. The original hosted API and root app remain unchanged by this addition.
+
+---
+
 # 🛒 E-Commerce Backend REST API
 
 A production-ready E-Commerce Backend REST API built using Node.js, Express.js, MongoDB, and JWT Authentication.

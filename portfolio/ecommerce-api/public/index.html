@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f2ec">
+    <meta name="description" content="A thoughtfully curated everyday store.">
+    <title>Forma — objects for everyday</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="announcement">Thoughtful essentials, made to stay. <span>Complimentary delivery over $75</span></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Forma home"><span class="brand-mark">F</span>forma<span class="brand-period">.</span></a>
+      <nav class="desktop-nav" aria-label="Main navigation"><a href="#shop">Shop all</a><a href="#story">Our approach</a></nav>
+      <div class="header-actions"><button class="text-button account-button" id="account-button">Sign in</button><button class="bag-button" id="bag-button" aria-label="Open shopping bag"><span>Bag</span><span class="bag-count" id="bag-count">0</span></button><button class="menu-button" id="menu-button" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button></div>
+    </header>
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy"><span class="eyebrow"><i></i> THE EVERYDAY EDIT · VOL. 02</span><h1 id="hero-title">Less, but<br><em>better.</em></h1><p>Considered objects for the rhythms of everyday life. Made with care, chosen to last.</p><a class="button button-dark" href="#shop">Explore the collection <span aria-hidden="true">↗</span></a><div class="hero-note"><span class="note-star">✳</span><span>Good things, made<br>for the long run.</span></div></div>
+        <div class="hero-art" role="img" aria-label="Sculptural arrangement of carefully chosen everyday objects"><div class="art-sun"></div><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-vase"><div class="vase-neck"></div></div><div class="art-bowl"></div><div class="art-stem"><i></i><i></i><i></i><i></i><b></b></div><div class="art-caption">A quieter kind of<br>everyday luxury <span>01 / 04</span></div><div class="art-tag">OBJECTS<br><b>WITH INTENTION</b></div></div>
+      </section>
+      <div class="benefit-strip"><span>01 <b>Thoughtful by design</b></span><span>02 <b>Made to last</b></span><span>03 <b>Easy, considered delivery</b></span><span>04 <b>Small details, big difference</b></span></div>
+      <section class="shop-section" id="shop" aria-labelledby="shop-title"><div class="section-heading"><div><span class="eyebrow">A FEW GOOD THINGS</span><h2 id="shop-title">The collection<span class="heading-dot">.</span></h2></div><div class="shop-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Find something" aria-label="Search products"></label><select id="category-filter" aria-label="Filter by category"><option value="">All categories</option></select></div></div><div id="product-grid" class="product-grid" aria-live="polite"><div class="loading-card">Finding the good things<span>•••</span></div></div><p class="empty-state" id="empty-state" hidden>Nothing here yet. Add products to your catalog, then refresh to see them.</p></section>
+      <section class="story-section" id="story"><div class="story-graphic"><div class="story-ring"></div><div class="story-card"><span>FORM<br>FOLLOWS<br><b>FEELING</b></span><small>EST. WITH CARE — 2024</small></div></div><div class="story-copy"><span class="eyebrow">A NOTE ON HOW WE MAKE</span><h2>Useful things.<br><em>Beautifully made.</em></h2><p>We believe the objects we live with should earn their place. Our collection is small by intention: useful pieces, honest materials, thoughtful details.</p><a class="underlined-link" href="#shop">Find your everyday favorite <span>↗</span></a></div></section>
+    </main>
+    <footer class="site-footer"><a class="brand" href="#top"><span class="brand-mark">F</span>forma<span class="brand-period">.</span></a><p>Objects for a life well lived.</p><span>© <span id="year"></span> Forma Studio</span></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="overlay" id="overlay" hidden></div>
+    <aside class="side-panel" id="cart-panel" aria-labelledby="cart-title" aria-hidden="true"><div class="panel-heading"><div><span class="eyebrow">YOUR EDIT</span><h2 id="cart-title">The bag<span class="heading-dot">.</span></h2></div><button class="icon-button close-panel" aria-label="Close bag">×</button></div><div class="cart-lines" id="cart-lines"></div><div class="cart-bottom"><div class="subtotal"><span>Subtotal</span><strong id="cart-total">$0.00</strong></div><p>Shipping and taxes calculated at checkout.</p><button class="button button-dark checkout-button" id="checkout-button">Continue to checkout <span>→</span></button></div></aside>
+    <dialog class="dialog" id="auth-dialog"><button class="icon-button dialog-close" aria-label="Close dialog">×</button><span class="eyebrow">WELCOME TO FORMA</span><h2 id="auth-title">Good to see you.</h2><p class="dialog-intro">Sign in to save your bag and place an order.</p><form id="auth-form"><label class="field-label" id="name-field" hidden>Name<input name="name" autocomplete="name" maxlength="100" placeholder="Your name"></label><label class="field-label">Email address<input name="email" type="email" required autocomplete="email" placeholder="you@example.com"></label><label class="field-label">Password<input name="password" type="password" required minlength="10" autocomplete="current-password" placeholder="At least 10 characters"></label><p class="form-error" id="auth-error" role="alert"></p><button class="button button-dark dialog-submit" type="submit" id="auth-submit">Sign in <span>→</span></button></form><button class="switch-auth" id="switch-auth">New here? <b>Create an account</b></button></dialog>
+    <dialog class="dialog" id="checkout-dialog"><button class="icon-button dialog-close" aria-label="Close dialog">×</button><span class="eyebrow">ALMOST YOURS</span><h2>Where should we send it?</h2><p class="dialog-intro">Your order will be saved securely. Payment can be added when you connect a provider.</p><form id="checkout-form"><label class="field-label">Shipping address<textarea name="shippingAddress" required maxlength="500" rows="3" placeholder="Street, city, postal code"></textarea></label><p class="form-error" id="checkout-error" role="alert"></p><button class="button button-dark dialog-submit" type="submit">Place order <span>→</span></button></form></dialog>
+  </body>
+</html>
