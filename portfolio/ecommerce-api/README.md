@@ -12,7 +12,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-API: `http://localhost:4000`; liveness endpoint: `/health/live`. MongoDB runs as a single-node replica set because checkout uses transactions. Data persists in the `mongo_data` volume.
+Storefront: `http://localhost:4000`; API health endpoint: `/health/live`. MongoDB runs as a single-node replica set because checkout uses transactions. Data persists in the `mongo_data` volume. Load sample products with `docker compose exec api npm run seed:demo`.
 
 To stop the stack, run `docker compose down`. Add `-v` only when you also want to erase the local MongoDB data.
 
@@ -46,6 +46,8 @@ All responses are JSON. Passwords are never returned. Checkout uses a MongoDB tr
 npm install
 npm run check
 ```
+
+To load the sample catalog without Docker, start a replica-set MongoDB, set `MONGODB_URI` and `JWT_SECRET`, then run `npm run seed:demo` before `npm run dev`.
 
 For local development, point `MONGODB_URI` at a MongoDB replica set (the Compose service is configured for that). Never commit `.env` or use the example JWT secret in a public deployment. Terminate TLS at a trusted ingress/proxy and set secrets in the deployment platform.
 

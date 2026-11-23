@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
@@ -13,6 +14,7 @@ app.use(express.json({ limit: '32kb' }));
 app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false }));
 app.get('/health/live', (req, res) => res.json({ status: 'ok', service: 'ecommerce-api' }));
 app.use('/api', router);
+app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0 }));
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
 app.use(errors);
 module.exports = app;
