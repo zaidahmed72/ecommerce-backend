@@ -1,207 +1,50 @@
-# 🛒 E-Commerce Backend REST API
+# Zaid Store API
 
-A production-ready E-Commerce Backend REST API built using Node.js, Express.js, MongoDB, and JWT Authentication.
+A responsive-client-ready REST API for a small online store. It includes customer/admin authorization, hashed passwords, short-lived JWTs, product search and pagination, persistent carts, immutable order line-item snapshots, stock validation, MongoDB transaction-based checkout, input limits, security headers, rate limiting, graceful shutdown and health checks.
 
-The project includes user authentication, role-based authorization, product management, cart system, order processing, and secure API handling.
+## Run locally
 
----
+Requirements: Node.js 20+, Docker Desktop with Compose. From this folder:
 
-# 🚀 Live API
+```sh
+cp .env.example .env
+# Set JWT_SECRET to a random value of at least 32 characters in .env
+docker compose up --build
+```
 
-https://ecommerce-backend-fvge.onrender.com
+API: `http://localhost:4000`; liveness endpoint: `/health/live`. MongoDB runs as a single-node replica set because checkout uses transactions. Data persists in the `mongo_data` volume.
 
----
+To stop the stack, run `docker compose down`. Add `-v` only when you also want to erase the local MongoDB data.
 
-# 🛠 Tech Stack
+## Quick start
 
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Mongoose
-- JWT Authentication
-- Cookies
-- REST API
-- Helmet
-- CORS
-- Express Rate Limit
-- Render Deployment
+Register a customer:
 
----
+```sh
+curl -X POST http://localhost:4000/api/auth/register -H 'Content-Type: application/json' -d '{"name":"Demo Customer","email":"customer@example.com","password":"correct-horse-battery"}'
+```
 
-# ✨ Features
+Login to receive a bearer token, then use `Authorization: Bearer <token>` on `/api/auth/me`, `/api/cart`, `/api/cart/items`, `/api/orders` and `/api/orders` (GET). Product browsing is public. Admin creation/editing and order status updates require an account whose `role` is `admin`; assign that role through a trusted administrative process, never from public registration.
 
-## 🔐 Authentication
+## API outline
 
-- User Registration
-- User Login
-- JWT Authentication
-- Protected Routes
-- Cookie Based Authentication
+| Method | Route | Access | Purpose |
+|---|---|---|---|
+| POST | `/api/auth/register`, `/api/auth/login` | Public | Create account / sign in |
+| GET | `/api/auth/me` | Customer/admin | Current account |
+| GET | `/api/products?q=&category=&page=&limit=` | Public | Search and browse |
+| POST/PATCH/DELETE | `/api/products` | Admin | Create, edit, deactivate |
+| GET/PUT/DELETE | `/api/cart`, `/api/cart/items` | Customer/admin | Read cart, set quantity, remove line |
+| POST/GET | `/api/orders` | Customer/admin | Checkout / own order history (admin sees all) |
+| PATCH | `/api/orders/:id/status` | Admin | Update fulfillment state |
 
----
+All responses are JSON. Passwords are never returned. Checkout uses a MongoDB transaction so stock, order creation and cart clearing commit together. Payment processing, email, tax rules and address validation are intentionally integration points, not simulated claims.
 
-## 👤 User Features
+## Development
 
-- Get Profile
-- Update Profile
-
----
-
-## 📦 Product Management
-
-- Create Product (Admin)
-- Get All Products
-- Get Single Product
-- Update Product (Admin)
-- Delete Product (Admin)
-
-Additional features:
-
-- Search Products
-- Category Filtering
-- Pagination
-- Price Sorting
-
----
-
-## 🛒 Cart System
-
-- Add Product To Cart
-- Update Product Quantity
-- Remove Cart Item
-- Clear Cart
-- Get User Cart
-
----
-
-## 📋 Order System
-
-- Create Order
-- Get User Orders
-- Get Single Order
-- Get All Orders (Admin)
-- Update Order Status
-
-Order workflow:
-
-Pending → Shipped → Delivered
-
----
-
-# 🔒 Security
-
-Implemented:
-
-- Helmet Security Headers
-- CORS Protection
-- Rate Limiting
-- JWT Middleware
-- Role Based Authorization
-- Central Error Handling Middleware
-
----
-
-# 📁 Project Structure
-src
-│
-├── config
-│ ├── db.js
-│ └── env.js
-│
-├── controllers
-│
-├── middleware
-│
-├── models
-│
-├── routes
-│
-├── app.js
-└── server.jssrc
-│
-├── config
-│ ├── db.js
-│ └── env.js
-│
-├── controllers
-│
-├── middleware
-│
-├── models
-│
-├── routes
-│
-├── app.js
-└── server.js
-
----
-
-# ⚙️ Installation
-
-Clone repository:
-
-```bash
-git clone https://github.com/zaidahmed72/ecommerce-backend.git
-Go inside project:
-
-cd ecommerce-backend
-
-Install dependencies:
-
+```sh
 npm install
-🔑 Environment Variables
+npm run check
+```
 
-Create .env file:
-
-PORT=3000
-
-MONGO_URL=your_mongodb_connection_string
-
-JWT_SECRET=your_secret_key
-▶️ Run Project
-
-Development:
-
-npm run dev
-
-Production:
-
-npm start
-📌 API Endpoints
-Authentication
-POST /api/users/register
-
-POST /api/users/login
-Products
-GET    /api/products
-
-GET    /api/products/:id
-
-POST   /api/products
-
-PUT    /api/products/:id
-
-DELETE /api/products/:id
-Cart
-GET    /api/cart
-
-POST   /api/cart
-
-PUT    /api/cart/:id
-
-DELETE /api/cart/:id
-Orders
-POST /api/orders
-
-GET /api/orders
-
-GET /api/orders/:id
-🌐 Deployment
-
-Backend deployed using:
-
-Render
-MongoDB Atlas
-👨‍💻 Author
-
-Zaid Ahmed
+For local development, point `MONGODB_URI` at a MongoDB replica set (the Compose service is configured for that). Never commit `.env` or use the example JWT secret in a public deployment. Terminate TLS at a trusted ingress/proxy and set secrets in the deployment platform.

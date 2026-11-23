@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    image: ${API_IMAGE:-zaid-ecommerce-api:local}
+    ports: ["4000:4000"]
+    environment:
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/zaid_store?replicaSet=rs0
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      NODE_ENV: production
+    depends_on:
+      mongo: { condition: service_healthy }
+    restart: unless-stopped
+  mongo:
+    image: mongo:7
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes: [mongo_data:/data/db]
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"try { rs.status().ok } catch (e) { rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'mongo:27017'}]}).ok }\" | grep 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+volumes:
+  mongo_data:
