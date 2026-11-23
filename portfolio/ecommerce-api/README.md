@@ -48,3 +48,7 @@ npm run check
 ```
 
 For local development, point `MONGODB_URI` at a MongoDB replica set (the Compose service is configured for that). Never commit `.env` or use the example JWT secret in a public deployment. Terminate TLS at a trusted ingress/proxy and set secrets in the deployment platform.
+
+## Jenkins pipeline
+
+The `Jenkinsfile` at this project root validates the JavaScript, builds the Compose stack with a commit-tagged API image, and smoke-checks `/health/live`. Use Jenkins LTS with Pipeline, Git, GitHub, Credentials Binding and Workspace Cleanup plugins; the agent needs Node.js 20+, Docker Compose v2 and `curl`. Configure the job from this repository with script path `Jenkinsfile`, then configure a GitHub push webhook to the secured Jenkins endpoint. Image publishing is opt-in and needs a `registry-credentials` username/password credential plus `IMAGE_REPOSITORY`. Production deployment is also opt-in, restricted to the default branch, and requires a protected `production` agent and a trusted `DEPLOY_COMMAND` environment value. Do not put registry or deployment secrets in this repository.

@@ -9,7 +9,7 @@ pipeline {
   parameters {
     string(name: 'IMAGE_REPOSITORY', defaultValue: '', description: 'Optional registry image, e.g. ghcr.io/owner/zaid-ecommerce-api')
     booleanParam(name: 'PUBLISH_IMAGE', defaultValue: false, description: 'Push image (requires registry-credentials and authenticated Docker agent)')
-    booleanParam(name: 'DEPLOY_PRODUCTION', defaultValue: false, description: 'Run protected deployment command on main only')
+    booleanParam(name: 'DEPLOY_PRODUCTION', defaultValue: false, description: 'Run protected deployment command on the default branch only')
   }
   stages {
     stage('Checkout') {
@@ -40,15 +40,19 @@ pipeline {
         script {
           if (!params.IMAGE_REPOSITORY?.trim()) error('Set IMAGE_REPOSITORY before publishing')
           withCredentials([usernamePassword(credentialsId: 'registry-credentials', usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PASSWORD')]) {
-            sh 'echo "$REGISTRY_PASSWORD" | docker login "$(echo "$IMAGE_REPOSITORY" | cut -d/ -f1)" -u "$REGISTRY_USER" --password-stdin'
-            sh 'docker push "${IMAGE}"'
-            sh 'docker logout "$(echo "$IMAGE_REPOSITORY" | cut -d/ -f1)"'
+            sh '''
+              set -eu
+              host="$(echo "$IMAGE_REPOSITORY" | cut -d/ -f1)"
+              trap 'docker logout "$host" >/dev/null 2>&1 || true' EXIT
+              echo "$REGISTRY_PASSWORD" | docker login "$host" -u "$REGISTRY_USER" --password-stdin
+              docker push "$IMAGE"
+            '''
           }
         }
       }
     }
     stage('Deploy production') {
-      when { expression { (env.BRANCH_NAME == 'main' || env.GIT_BRANCH == 'origin/main') && params.DEPLOY_PRODUCTION && params.PUBLISH_IMAGE } }
+      when { expression { (env.BRANCH_NAME in ['main', 'master'] || env.GIT_BRANCH in ['origin/main', 'origin/master']) && params.DEPLOY_PRODUCTION && params.PUBLISH_IMAGE } }
       agent { label 'production' }
       steps {
         sh '''
